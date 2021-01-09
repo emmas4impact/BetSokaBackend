@@ -24,7 +24,7 @@ const userSchema = new Schema({
       type: Number,
       required: true,
       minlength: 11,
-      maxlength:11
+      maxlength:15
     },
     age:{
       type: Number,
