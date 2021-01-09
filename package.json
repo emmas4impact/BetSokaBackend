@@ -1,0 +1,52 @@
+{
+  "name": "BetSokaBackend",
+  "version": "1.0.0",
+  "description": "Backend to handle users logins",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watch --detectOpenHandles --setupFiles dotenv/config",
+    "dev": "nodemon -r dotenv/config ./src/server.js",
+    "start": "node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emmas4impact/BetSokaBackend.git"
+  },
+  "keywords": [],
+  "author": "Emmanuel Adedeji",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emmas4impact/BetSokaBackend.git/issues"
+  },
+  "homepage": "https://github.com/emmas4impact/BetSokaBackend.git#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "supertest": "^5.0.0"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^7.2.6",
+    "bcrypt": "^5.0.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-list-endpoints": "^5.0.0",
+    "fs-extra": "^9.0.1",
+    "helmet": "^4.1.1",
+    "jest": "^26.4.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.6",
+    "multer": "^1.4.2",
+    "node-geocoder": "^3.27.0",
+    "passport": "^0.4.1",
+    "pdfmake": "^0.1.68",
+    "prettier": "^2.1.2",
+    "query-to-mongo": "^0.10.1",
+    "react-content-loader": "^5.1.4",
+    "sendgrid": "^5.2.3",
+    "strongloop": "^6.0.3",
+    "swagger-ui-express": "^4.1.4",
+    "validator": "^13.1.17",
+    "yamljs": "^0.3.0"
+  }
+}
