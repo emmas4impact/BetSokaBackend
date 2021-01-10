@@ -2,7 +2,7 @@ const {
   model,
   Schema
 } = require("mongoose");
-const valid = require("validator");
+const validator = require("mongoose-validator");
 const bcrypt = require("bcrypt");
 
 
@@ -17,6 +17,7 @@ const userSchema = new Schema({
     },
     username: {
       type: String,
+      lowercase: true,
       required: true,
 
     },
@@ -38,12 +39,21 @@ const userSchema = new Schema({
     },
     role: {
       type: String,
-      required: true
+      required: true,
+      trim: true,
+      default: 'user'
     },
     email: {
       type: String,
-      required: true,
-
+      lowercase: true,
+      trim: true,
+      validate: [
+        validator({
+          validator: 'isEmail',
+          message: 'Oops..please enter valid email'
+        })
+      ],
+      required: true
     },
     refreshTokens: [{
       token: {
