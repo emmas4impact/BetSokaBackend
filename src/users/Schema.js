@@ -19,6 +19,7 @@ const userSchema = new Schema({
     type: String,
     lowercase: true,
     required: true,
+    trim: true
 
   },
   phone: {
@@ -36,10 +37,14 @@ const userSchema = new Schema({
     type: Date,
     validate: {
       validator: function (v) {
-        v.setFullYear(v.getFullYear() + 18)
-        const currentTime = new Date();
-        currentTime.setHours(0, 0, 0, 0);
-        return v.getTime() <= currentTime.getTime();
+        var today = new Date();
+        var birthDate = v;
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age >=18;
       },
       message: props => 'You must be 18 years old.'
     },
@@ -109,11 +114,11 @@ userSchema.methods.toJSON = function () {
 
   return userObject
 }
-userSchema.statics.findByCredentials = async (email, password) => {
+userSchema.statics.findByCredentials = async (username, password) => {
   const user = await UserModel.findOne({
-    email
-  })
-  console.log(user)
+    username: username
+  });
+  console.log(user.dov);
   const isMatch = await bcrypt.compare(password, user.password)
 
   if (!isMatch) {
@@ -121,6 +126,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
     err.httpStatusCode = 401
     throw err
   }
+  console.log("i am right heere");
 
   return user
 }

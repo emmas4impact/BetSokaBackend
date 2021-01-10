@@ -17,15 +17,22 @@ router.post("/register", async (req, res) => {
     const checkEmail = await UserModel.find({
       email: req.body.email
     });
-    console.log(checkEmail);
-    if (checkEmail.length !== 0) {
-      res.status(409).send("user with same email exists");
-    } else {
-
-      const newUser = new UserModel(req.body);
-      await newUser.save();
-      res.status(201).send("registered successfuly");
+    const checkUsername = await UserModel.find({
+      username: req.body.username
+    });
+    // console.log(checkEmail);
+    if(checkUsername.length !== 0){
+      res.status(409).send("Username name not avalible, try another! ");
+    }else{
+      if (checkEmail.length !== 0) {
+        res.status(409).send("User with email already exists");
+      } else {
+        const newUser = new UserModel(req.body);
+        await newUser.save();
+        res.status(201).send("registered successfuly");
+      }
     }
+  
   } catch (error) {
     //next(error);
     res.send(error.errors);
@@ -39,7 +46,7 @@ router.get("/", adminOnlyMiddleware, async (req, res, next) => {
       total: users.length
     })
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     next(error)
   }
 })
@@ -56,7 +63,7 @@ router.get("/:id", authorize, async (req, res, next) => {
     const users = await UserModel.findById(req.params.id)
     res.send(users)
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     next(error)
   }
 })
@@ -79,13 +86,14 @@ router.put("/:username", authorize, async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const {
-      email,
+      username,
       password
     } = req.body
-    const user = await UserModel.findByCredentials(email, password)
-    console.log(user)
+
+    const user = await UserModel.findByCredentials(username,password)
+    // console.log(user)
     const tokens = await authenticate(user)
-    console.log("newly generated token : ", tokens)
+    // console.log("newly generated token : ", tokens)
     res.cookie("accessToken", tokens.token)
     res.cookie("refreshToken", tokens.refreshToken)
     res.send("login successfully")
@@ -127,7 +135,7 @@ router.post("/refreshToken", async (req, res, next) => {
       const newTokens = await refreshToken(oldRefreshToken)
       res.send(newTokens)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       const err = new Error(error)
       err.httpStatusCode = 403
       next(err)
