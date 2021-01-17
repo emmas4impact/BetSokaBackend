@@ -2,6 +2,7 @@ const express = require("express");
 const UserModel = require("./Schema");
 const mailgun = require("mailgun-js");
 const jwt = require("jsonwebtoken")
+const _ = require("lodash");
 const DOMAIN = process.env.DOMAIN;
 const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
 const {
@@ -40,7 +41,12 @@ router.post("/register", async (req, res) => {
         html: `<h2> Please click on given link to activate your account</h2>
         <a href="${process.env.CLIENT_URL}/authentication/activate/${token}">Activate your account!</a>
         <p>${process.env.CLIENT_URL}/authentication/activate/${token}</>
-        `
+        <small>Best regards,</small>
+        <br>
+        <strong>BetSoka INC,</strong>
+        <br>
+        <strong>Lagos, Nigeria</strong>
+      `
       };
       mg.messages().send(data, function (error, body) {
         if(error){
@@ -148,6 +154,11 @@ router.put("/forgot-password", async(req, res, next)=>{
         html: `<h2> Please click on given link to reset your password</h2>
         <a href="${process.env.CLIENT_URL}/resetpassword/${token}">Password reset link!</a>
         <p>${process.env.CLIENT_URL}/resetpassword/${token}</>
+        <small>Best regards,</small>
+        <br>
+        <strong>BetSoka INC</strong>
+        <br>
+        <strong>Lagos, Nigeria</strong>
         `
       };
       return user.updateOne({resetLink: token}, function(err, success){
@@ -171,7 +182,47 @@ router.put("/forgot-password", async(req, res, next)=>{
   }
   
 })
-
+router.put("/reset-password", async(req, res, next)=>{
+ try {
+  const {resetLink, newPass} = req.body;
+  if(resetLink){
+    jwt.verify(resetLink, process.env.RESET_PASS_KEY, function(error, decodedData) {
+      if(error){
+        return res.status(401).json({error: "Incorrect token or it is expired."}); 
+      }
+      UserModel.findOne({resetLink}, (err, user)=>{
+        if(err|| !user){
+          return res.status(400).json({error: "user with this token does not exist"})
+        }
+        //const oldPass = await UserModel.findOne({password})
+        const obj ={
+          password: newPass,
+          resetLink: ''
+        }
+        
+        user = _.extend(user, obj);
+       
+        user.save((err, result)=>{
+          if(err){
+            return res.status(400).json({error: "reset passord error"})
+          }else{
+              return res.status(200).json({message: "Your password has been changed!"});
+          }
+        })
+      })
+      
+    })
+    
+  }else{
+    return res.status(401).send("Authentication error!"); 
+  }
+  
+   
+ } catch (error) {
+   next(error)
+ }
+  
+})
 router.get("/", adminOnlyMiddleware, async (req, res, next) => {
   try {
     const users = await UserModel.find(req.query)
