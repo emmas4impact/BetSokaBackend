@@ -138,7 +138,7 @@ router.put("/forgot-password", async(req, res, next)=>{
     
     UserModel.findOne({email},(err, user)=>{
       if(err || !user){
-        return res.status(409).send("user with same email exists"); 
+        return res.status(409).send("user with that email does not exist"); 
       }
       const token = jwt.sign(
         {_id: user._id},
