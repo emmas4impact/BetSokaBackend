@@ -14,8 +14,7 @@ const {
 } = require("../middlewares/authorize");
 const { json } = require("express");
 const router = express.Router();
-// const bcrypt = require("bcrypt");
-// const passport = require("passport");
+
 
 router.post("/register", async (req, res) => {
   try {
@@ -85,7 +84,30 @@ router.post("/email-activate", async (req, res, next) => {
                 console.log("Error in signup", err)
                 return res.status(400), json({error: err})
               }
-              res.json({message: "Register successfully!"})
+              const data = {
+                from: 'noreply@betsoka.com.ng',
+                to: email,
+                subject: 'Account Activated!',
+                html: `<h2> Congratulations, ${name} your account has been activated successfully</h2>
+               
+                <h4>You can now bet with you account!</h4>
+                
+                <small>Best regards,</small>
+                <br>
+                <strong>BetSoka INC</strong>
+                <br>
+                <strong>Lagos, Nigeria</strong>
+                `
+              };
+              mg.messages().send(data, function (error, body) {
+                if(error){
+                  return res.json({
+                    error: err.message
+                  })
+                }
+                return res.json({message: "Account Activated!"})
+              });
+              //res.json({message: "Register successfully!"})
             });
           })
         
