@@ -107,7 +107,7 @@ router.post("/email-activate", async (req, res, next) => {
                 }
                 return res.json({message: "Account Activated!"})
               });
-              //res.json({message: "Register successfully!"})
+              
             });
           })
         
@@ -122,9 +122,54 @@ router.post("/email-activate", async (req, res, next) => {
     }
     
   } catch (error) {
-    next(error)
+    next(error);
   }
 
+})
+router.put("/forgot-password", async(req, res, next)=>{
+  try {
+    const {email}= req.body;
+    
+    UserModel.findOne({email},(err, user)=>{
+      if(err || !user){
+        return res.status(409).send("user with same email exists"); 
+      }
+      const token = jwt.sign(
+        {_id: user._id},
+        process.env.RESET_PASS_KEY, {
+          expiresIn: "30m"
+        }
+      );
+      
+      const data = {
+        from: 'noreply@betsoka.com.ng',
+        to: email,
+        subject: 'PASSWORD ACTIVATION LINK',
+        html: `<h2> Please click on given link to reset your password</h2>
+        <a href="${process.env.CLIENT_URL}/resetpassword/${token}">Password reset link!</a>
+        <p>${process.env.CLIENT_URL}/resetpassword/${token}</>
+        `
+      };
+      return user.updateOne({resetLink: token}, function(err, success){
+        if(err){
+          return res.status(400).json({error: "reset passord link error"})
+        }else{
+          mg.messages().send(data, function (error, body) {
+            if(error){
+              return res.json({
+                error: err.message
+              })
+            }
+            return res.json({message: "Email has been sent, kindly reset your password"})
+          }); 
+        }
+      })
+     
+    })
+  } catch (error) {
+    next(error);
+  }
+  
 })
 
 router.get("/", adminOnlyMiddleware, async (req, res, next) => {
