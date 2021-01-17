@@ -231,7 +231,7 @@ router.get("/", adminOnlyMiddleware, async (req, res, next) => {
       total: users.length
     })
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     next(error)
   }
 })
@@ -248,7 +248,7 @@ router.get("/:id", authorize, async (req, res, next) => {
     const users = await UserModel.findById(req.params.id)
     res.send(users)
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     next(error)
   }
 })
@@ -271,13 +271,14 @@ router.put("/:username", authorize, async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const {
-      email,
+      username,
       password
     } = req.body
-    const user = await UserModel.findByCredentials(email, password)
-    console.log(user)
+
+    const user = await UserModel.findByCredentials(username,password)
+    // console.log(user)
     const tokens = await authenticate(user)
-    console.log("newly generated token : ", tokens)
+    // console.log("newly generated token : ", tokens)
     res.cookie("accessToken", tokens.token)
     res.cookie("refreshToken", tokens.refreshToken)
     res.send("login successfully")
@@ -319,7 +320,7 @@ router.post("/refreshToken", async (req, res, next) => {
       const newTokens = await refreshToken(oldRefreshToken)
       res.send(newTokens)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       const err = new Error(error)
       err.httpStatusCode = 403
       next(err)

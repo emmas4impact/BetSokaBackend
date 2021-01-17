@@ -8,7 +8,6 @@ const authorize = async (req, res, next) => {
   //console.log("COOKIES:", req.cookies)
   try {
     const token = req.cookies.accessToken
-    console.log(req.cookies)
     const decoded = await verifyJWT(token)
     const user = await UserModel.findOne({
       _id: decoded._id,
