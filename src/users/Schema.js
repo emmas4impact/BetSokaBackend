@@ -73,12 +73,17 @@ const userSchema = new Schema({
     ],
     required: true
   },
+  resetLink:{
+    data: String,
+    default:''
+  },
   refreshTokens: [{
     token: {
       type: String,
       required: true,
     },
   },],
+  
 
 },
 
