@@ -5,7 +5,7 @@ const {
 } = require("../auth/authTools")
 
 const authorize = async (req, res, next) => {
-  //console.log("COOKIES:", req.cookies)
+ 
   try {
     const token = req.cookies.accessToken
     const decoded = await verifyJWT(token)
@@ -30,7 +30,8 @@ const authorize = async (req, res, next) => {
 }
 
 const adminOnlyMiddleware = async (req, res, next) => {
-  if (req.user && req.user.role === "admin") next()
+
+  if (req.user && req.user.role === "admin")next();
   else {
     const err = new Error("Only for admins!")
     err.httpStatusCode = 403
