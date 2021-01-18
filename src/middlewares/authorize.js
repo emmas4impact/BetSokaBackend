@@ -30,6 +30,10 @@ const authorize = async (req, res, next) => {
 }
 
 const adminOnlyMiddleware = async (req, res, next) => {
+  const user = await UserModel.findOne({
+    _id: decoded._id,
+  })
+  req.user = user
   if (req.user && req.user.role === "admin") next()
   else {
     const err = new Error("Only for admins!")
