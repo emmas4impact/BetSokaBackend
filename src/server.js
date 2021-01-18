@@ -9,7 +9,7 @@ const {
 } = require("path");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
-
+const resultRoute = require("./matchResults/index");
 const userRoute = require("./users/index");
 
 
@@ -48,6 +48,7 @@ server.use(express.json());
 
 server.use("/users", userRoute);
 
+server.use("/match-result", resultRoute);
 
 server.use(badRequestHandler);
 server.use(forbiddenHandler);
