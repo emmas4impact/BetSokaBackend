@@ -11,7 +11,7 @@ const {
   const { json } = require("express");
   const result = express.Router();
   
-  result.get("/", adminOnlyMiddleware, async (req, res, next)=>{
+  result.get("/", authorize, adminOnlyMiddleware, async (req, res, next)=>{
      try {
         const showResult = await ResultModel.find(req.params);
         if(showResult){
