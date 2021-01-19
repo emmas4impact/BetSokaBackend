@@ -194,7 +194,6 @@ router.put("/reset-password", async(req, res, next)=>{
         if(err|| !user){
           return res.status(400).json({error: "user with this token does not exist"})
         }
-        //const oldPass = await UserModel.findOne({password})
         const obj ={
           password: newPass,
           resetLink: ''
