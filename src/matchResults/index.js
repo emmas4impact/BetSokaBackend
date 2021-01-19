@@ -33,8 +33,15 @@ const ResultModel = require("./Schema");
   result.delete("/:id", authorize, adminOnlyMiddleware, async (req, res, next)=>{
       try {
           const deleteMatchResult = await ResultModel.findByIdAndDelete(req.params.id);
-          if(deleteMatchResult)
-            res.status(202).json({message: "Record deleted successfully"})
+          if(deleteMatchResult){
+            res.status(202).json({message: "Record deleted successfully"});
+              
+          }else{
+              
+          }
+
+        
+          
           
       } catch (error) {
           next(error);
