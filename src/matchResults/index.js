@@ -1,9 +1,6 @@
 const express =require('express');
 const ResultModel = require("./Schema");
-const {
-    authenticate,
-    refreshToken
-  } = require("../auth/authTools");
+
   const {
     authorize,
     adminOnlyMiddleware
@@ -24,5 +21,30 @@ const {
      } catch (error) {
          next(error)
      }
+  })
+  result.post("/",authorize, adminOnlyMiddleware, async(req, res, next)=>{
+      try {
+          
+      } catch (error) {
+          next(error);
+      }
+      
+  })
+  result.delete("/:id", authorize, adminOnlyMiddleware, async (req, res, next)=>{
+      try {
+          const deleteMatchResult = await ResultModel.findByIdAndDelete(req.params.id);
+          if(deleteMatchResult){
+            res.status(202).json({message: "Record deleted successfully"});
+              
+          }else{
+              
+          }
+
+        
+          
+          
+      } catch (error) {
+          next(error);
+      }
   })
   module.exports = result;
