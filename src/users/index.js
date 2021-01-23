@@ -54,7 +54,9 @@ router.post("/register", async (req, res) => {
             error: err.message
           })
         }
+        console.log(body)
         return res.json({message: "Email has been sent kindly activate your account"})
+        
       });
      
     })
