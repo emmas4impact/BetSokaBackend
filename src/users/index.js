@@ -280,8 +280,19 @@ router.post("/login", async (req, res, next) => {
     // console.log(user)
     const tokens = await authenticate(user)
     // console.log("newly generated token : ", tokens)
-    res.cookie("accessToken", tokens.token)
-    res.cookie("refreshToken", tokens.refreshToken)
+    //res.cookie("accessToken", tokens.token)
+    //res.cookie("refreshToken", tokens.refreshToken)
+    res.cookie("accessToken", tokens.accessToken, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    })
+    res.cookie("refreshToken", tokens.refreshToken, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/users/refreshToken",
+    })
     res.send("login successfully")
   } catch (error) {
     next(error)
@@ -294,7 +305,10 @@ router.post("/logout", authorize, async (req, res, next) => {
       (t) => t.token !== req.body.refreshToken
     )
     await req.user.save()
-    res.send()
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    res.send("logout successfully!")
+    
   } catch (err) {
     next(err)
   }
