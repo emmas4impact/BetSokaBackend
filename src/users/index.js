@@ -318,7 +318,7 @@ router.post("/logoutAll", authorize, async (req, res, next) => {
   try {
     req.user.refreshTokens = []
     await req.user.save()
-    res.send()
+    res.send("Logout successfully")
   } catch (err) {
     next(err)
   }
