@@ -295,8 +295,9 @@ router.post("/login", async (req, res, next) => {
   // })
     if(user){
       res.send(tokens);
+      res.send("login successfully")
     }
-    res.send("login successfully")
+    
   } catch (error) {
     next(error)
   }
