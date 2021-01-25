@@ -280,19 +280,19 @@ router.post("/login", async (req, res, next) => {
     // console.log(user)
     const tokens = await authenticate(user)
     console.log("newly generated token : ", tokens)
-    // res.cookie("accessToken", tokens.token)
-    // res.cookie("refreshToken", tokens.refreshToken)
-    res.cookie("accessToken", tokens.token, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-    })
-    res.cookie("refreshToken", tokens.refreshToken, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: true,
-        path: "/users/refreshToken",
-    })
+    res.cookie("accessToken", tokens.token)
+    res.cookie("refreshToken", tokens.refreshToken)
+    // res.cookie("accessToken", tokens.token, {
+    //   httpOnly: true,
+    //   sameSite: "none",
+    //   secure: true,
+    // })
+    // res.cookie("refreshToken", tokens.refreshToken, {
+    //     httpOnly: true,
+    //     sameSite: "none",
+    //     secure: true,
+    //     path: "/users/refreshToken",
+    // })
     res.send("login successfully")
   } catch (error) {
     next(error)
