@@ -294,8 +294,8 @@ router.post("/login", async (req, res, next) => {
     //     path: "/users/refreshToken",
   // })
     if(user){
-      res.send(tokens);
-      res.send("login successfully")
+     
+      res.send(req.user)
     }
     
   } catch (error) {
