@@ -279,10 +279,10 @@ router.post("/login", async (req, res, next) => {
     const user = await UserModel.findByCredentials(username,password)
     // console.log(user)
     const tokens = await authenticate(user)
-    // console.log("newly generated token : ", tokens)
-    //res.cookie("accessToken", tokens.token)
-    //res.cookie("refreshToken", tokens.refreshToken)
-    res.cookie("accessToken", tokens.accessToken, {
+    console.log("newly generated token : ", tokens)
+    // res.cookie("accessToken", tokens.token)
+    // res.cookie("refreshToken", tokens.refreshToken)
+    res.cookie("accessToken", tokens.token, {
       httpOnly: true,
       sameSite: "none",
       secure: true,
