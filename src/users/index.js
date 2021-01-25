@@ -292,7 +292,10 @@ router.post("/login", async (req, res, next) => {
     //     sameSite: "none",
     //     secure: true,
     //     path: "/users/refreshToken",
-    // })
+  // })
+    if(user){
+      res.send(tokens);
+    }
     res.send("login successfully")
   } catch (error) {
     next(error)
