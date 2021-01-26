@@ -54,7 +54,9 @@ router.post("/register", async (req, res) => {
             error: err.message
           })
         }
+        console.log(body)
         return res.json({message: "Email has been sent kindly activate your account"})
+        
       });
      
     })
@@ -277,10 +279,26 @@ router.post("/login", async (req, res, next) => {
     const user = await UserModel.findByCredentials(username,password)
     // console.log(user)
     const tokens = await authenticate(user)
-    // console.log("newly generated token : ", tokens)
+    console.log("newly generated token : ", tokens)
     res.cookie("accessToken", tokens.token)
     res.cookie("refreshToken", tokens.refreshToken)
-    res.send("login successfully")
+    // res.cookie("accessToken", tokens.token, {
+    //   httpOnly: true,
+    //   sameSite: "none",
+    //   secure: true,
+    // })
+    // res.cookie("refreshToken", tokens.refreshToken, {
+    //     httpOnly: true,
+    //     sameSite: "none",
+    //     secure: true,
+    //     path: "/users/refreshToken",
+  // })
+    if(user){
+      res.send(user);
+      res.send("login successfully")
+      
+    }
+    
   } catch (error) {
     next(error)
   }
@@ -292,7 +310,10 @@ router.post("/logout", authorize, async (req, res, next) => {
       (t) => t.token !== req.body.refreshToken
     )
     await req.user.save()
-    res.send()
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    res.send("logout successfully!")
+    
   } catch (err) {
     next(err)
   }
@@ -302,7 +323,7 @@ router.post("/logoutAll", authorize, async (req, res, next) => {
   try {
     req.user.refreshTokens = []
     await req.user.save()
-    res.send()
+    res.send("Logout successfully")
   } catch (err) {
     next(err)
   }

@@ -34,7 +34,7 @@ const corsOptions = {
     credentials: true,
 }
 
-server.use(cors());
+server.use(cors(corsOptions));
 server.use(cookieParser());
 server.use(helmet());
 const staticFolderPath = join(__dirname, "../public");

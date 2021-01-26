@@ -12,7 +12,7 @@ const authorize = async (req, res, next) => {
     const user = await UserModel.findOne({
       _id: decoded._id,
     })
-    //console.log(user)
+    console.log(user)
 
     if (!user) {
       throw new Error()
