@@ -156,8 +156,8 @@ router.put("/forgot-password", async(req, res, next)=>{
         to: email,
         subject: 'PASSWORD ACTIVATION LINK',
         html: `<h2> Please click on given link to reset your password</h2>
-        <a href="${process.env.CLIENT_URL}/forget-password/${token}">Password reset link!</a>
-        <p>${process.env.CLIENT_URL}/forget-password/${token}</>
+        <a href="${process.env.CLIENT_URL}/forgot-password/${token}">Password reset link!</a>
+        <p>${process.env.CLIENT_URL}/forgot-password/${token}</>
         <small>Best regards,</small>
         <br>
         <strong>BetSoka INC</strong>
