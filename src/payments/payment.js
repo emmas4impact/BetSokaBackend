@@ -6,6 +6,7 @@ const stripe = require('stripe')(process.env.SECRET_LIVE_APIKEY || process.env.S
 paymentRouter.post('/', async (req,res) => {
     try{
       let {status} = await stripe.charges.create({
+        
         amount: req.body.amount,
         currency: 'usd',
         source: req.body.token,
