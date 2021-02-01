@@ -26,7 +26,7 @@ const {
       required: true
   },
   gameDate:{
-      tyoe: Date,
+      type: Date,
       required:true
   }
   
