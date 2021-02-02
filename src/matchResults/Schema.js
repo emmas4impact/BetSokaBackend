@@ -5,20 +5,32 @@ const {
 
   
   const matchResultSchema = new Schema({
-    gameDate: {
-      type: Date,
+   
+  homeGoals:{
+      type: Number,
       required: true
-    },
-    resultDetails: [{
-        fixturesID: {
-            type: Array,
-        },
-        results:{
-            type: String
-        },
-        
-    }],
-
+  },
+  awayGoals:{
+    type: Number,
+    required: true
+  },
+  score:{
+      type: String
+  },
+  homeTeam:{
+      type: String,
+      required: true
+  },
+  awayTeam:{
+      type: String,
+      required: true
+  },
+  gameDate:{
+      type: Date,
+      required:true,
+      unique: true
+      
+  }
 },
   
     {

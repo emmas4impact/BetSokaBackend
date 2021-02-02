@@ -1,7 +1,8 @@
 const express = require("express");
 const UserModel = require("./Schema");
 const mailgun = require("mailgun-js");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const path = require("path");
 const _ = require("lodash");
 const DOMAIN = process.env.DOMAIN;
 const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
@@ -20,7 +21,7 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
   try {
     const {name,surname,username,phone,dob,email,password,role}=req.body;
-  
+   //const filepath = path.join(__dirname, '../../public/EMMANUELADEDEJI.pdf');
     UserModel.findOne({email}).exec((err, user)=>{
       if(user){
         return res.status(409).send("user with same email exists");
@@ -149,13 +150,14 @@ router.put("/forgot-password", async(req, res, next)=>{
         }
       );
       
+      
       const data = {
         from: 'noreply@betsoka.com.ng',
         to: email,
         subject: 'PASSWORD ACTIVATION LINK',
         html: `<h2> Please click on given link to reset your password</h2>
-        <a href="${process.env.CLIENT_URL}/resetpassword/${token}">Password reset link!</a>
-        <p>${process.env.CLIENT_URL}/resetpassword/${token}</>
+        <a href="${process.env.CLIENT_URL}/forgot-password/${token}">Password reset link!</a>
+        <p>${process.env.CLIENT_URL}/forgot-password/${token}</>
         <small>Best regards,</small>
         <br>
         <strong>BetSoka INC</strong>
@@ -297,6 +299,8 @@ router.post("/login", async (req, res, next) => {
       res.send(user);
       res.send("login successfully")
       
+    }else{
+      res.status(404).json({message: "User not found!"})
     }
     
   } catch (error) {

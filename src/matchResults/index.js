@@ -1,16 +1,10 @@
 const express =require('express');
 const ResultModel = require("./Schema");
-
-  const {
-    authorize,
-    adminOnlyMiddleware
-  } = require("../middlewares/authorize");
-  const { json } = require("express");
-  const result = express.Router();
+const result = express.Router();
   
-  result.get("/", authorize, adminOnlyMiddleware, async (req, res, next)=>{
+  result.get("/",  async (req, res, next)=>{
      try {
-        const showResult = await ResultModel.find(req.params);
+        const showResult = await ResultModel.find(req.query);
         if(showResult){
             res.status(200).send(showResult)
         }else{
@@ -22,27 +16,64 @@ const ResultModel = require("./Schema");
          next(error)
      }
   })
-  result.post("/",authorize, adminOnlyMiddleware, async(req, res, next)=>{
+  result.get("/:id",  async (req, res, next)=>{
+    try {
+       const showResult = await ResultModel.findById(req.params.id)
+       if(showResult){
+           res.status(200).send(showResult)
+       }else{
+           res.status(404).json({message: "Match id inavlid"})
+       }
+       
+        
+    } catch (error) {
+        next(error)
+    }
+ })
+  result.post("/",async(req, res, next)=>{
       try {
+        const newMatchResult = new ResultModel({
+            ...req.body
+            
+        });
+        const savedMatchResult = await newMatchResult.save();
+        if(savedMatchResult ){
+            res.status(201).send(savedMatchResult );
+        }else{
+            res.status(404).json({message: "Please check match result"});
+        }
           
       } catch (error) {
           next(error);
       }
       
-  })
-  result.delete("/:id", authorize, adminOnlyMiddleware, async (req, res, next)=>{
+  });
+  result.put("/:id",  async (req, res, next) => {
+    try {
+      const updateMatchResult  = await ResultModel.findByIdAndUpdate(
+        req.params.id,
+        req.body
+      );
+      if (updateMatchResult ) {
+        res.status(201).send(updateMatchResult );
+      } else {
+        const error = new Error(`Match Result with id ${req.params.id} not found`);
+        error.httpStatusCode = 404;
+        next(error);
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
+  result.delete("/:id", async (req, res, next)=>{
       try {
           const deleteMatchResult = await ResultModel.findByIdAndDelete(req.params.id);
           if(deleteMatchResult){
             res.status(202).json({message: "Record deleted successfully"});
               
           }else{
-              
-          }
-
-        
-          
-          
+            res.status(404).json({message: "Record id invalid"});     
+          }    
       } catch (error) {
           next(error);
       }
