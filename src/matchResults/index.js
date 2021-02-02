@@ -4,7 +4,7 @@ const result = express.Router();
   
   result.get("/",  async (req, res, next)=>{
      try {
-        const showResult = await ResultModel.find(req.params);
+        const showResult = await ResultModel.find(req.query);
         if(showResult){
             res.status(200).send(showResult)
         }else{
@@ -16,6 +16,20 @@ const result = express.Router();
          next(error)
      }
   })
+  result.get("/:id",  async (req, res, next)=>{
+    try {
+       const showResult = await ResultModel.findById(req.params.id)
+       if(showResult){
+           res.status(200).send(showResult)
+       }else{
+           res.status(404).json({message: "Match id inavlid"})
+       }
+       
+        
+    } catch (error) {
+        next(error)
+    }
+ })
   result.post("/",async(req, res, next)=>{
       try {
         const newMatchResult = new ResultModel({
@@ -33,7 +47,24 @@ const result = express.Router();
           next(error);
       }
       
-  })
+  });
+  result.put("/:id",  async (req, res, next) => {
+    try {
+      const updateMatchResult  = await ResultModel.findByIdAndUpdate(
+        req.params.id,
+        req.body
+      );
+      if (updateMatchResult ) {
+        res.status(201).send(updateMatchResult );
+      } else {
+        const error = new Error(`Match Result with id ${req.params.id} not found`);
+        error.httpStatusCode = 404;
+        next(error);
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
   result.delete("/:id", async (req, res, next)=>{
       try {
           const deleteMatchResult = await ResultModel.findByIdAndDelete(req.params.id);
