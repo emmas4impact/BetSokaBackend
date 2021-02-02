@@ -27,11 +27,10 @@ const {
   },
   gameDate:{
       type: Date,
-      required:true
+      required:true,
+      unique: true
+      
   }
-  
-
-
 },
   
     {
