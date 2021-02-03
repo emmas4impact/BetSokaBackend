@@ -33,7 +33,7 @@ const {
   gameDate:{
       type: Date,
       required:true,
-      unique: true
+      
       
   }
 },
