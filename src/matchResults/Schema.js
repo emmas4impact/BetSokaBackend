@@ -8,7 +8,7 @@ const {
     fixtureId:{
         type: Number,
         required: true,
-        unique:true
+        
         
     },
   homeGoals:{
@@ -32,9 +32,7 @@ const {
   },
   gameDate:{
       type: Date,
-      required:true,
-      
-      
+      required:true 
   }
 },
   
