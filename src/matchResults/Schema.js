@@ -5,7 +5,12 @@ const {
 
   
   const matchResultSchema = new Schema({
-   
+    fixtureId:{
+        type: Number,
+        required: true,
+        unique:true
+        
+    },
   homeGoals:{
       type: Number,
       required: true
