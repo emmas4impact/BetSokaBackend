@@ -7,9 +7,7 @@ const {
   const matchResultSchema = new Schema({
     fixtureId:{
         type: Number,
-        required: true,
-        
-        
+        required: true,    
     },
   homeGoals:{
       type: Number,
@@ -27,6 +25,10 @@ const {
       required: true
   },
   awayTeam:{
+      type: String,
+      required: true
+  },
+  status:{
       type: String,
       required: true
   },
