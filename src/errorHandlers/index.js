@@ -10,6 +10,12 @@ const forbiddenHandler = (err, req, res, next) => {
     }
     next(err)
   } // 403
+const conflictedHandler=(err, req, res, next) =>{
+    if (err.httpStatusCode === 409) {
+        res.status(409).send(err.message || "Duplicated Record!")
+      }
+      next(err)
+}
 const notFoundHandler = (err,req,res,next) => {
     if(err.httpStatusCode=== 404){
         res.status(404).send(err.message || "Resource not found!")
@@ -28,5 +34,6 @@ module.exports = {
     badRequestHandler,
     notFoundHandler,
     forbiddenHandler,
-    genericErrorHandler
+    genericErrorHandler,
+    conflictedHandler
 }

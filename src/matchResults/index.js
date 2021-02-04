@@ -47,22 +47,21 @@ const q2m = require("query-to-mongo");
         next(error)
     }
  })
-  result.post("/",async(req, res, next)=>{
+  result.post("/", async(req, res, next)=>{
      try {
          ResultModel.findOne({fixtureId}).exec((err, fixture_id)=>{
              if(fixture_id){
                 const err = new Error("Duplicated Record")
                 err.httpStatusCode = 409
                 next(err)
-             }else{
-                 const newMatchResult = new ResultModel({...req.body});
-                 const savedMatchResult = await newMatchResult.save();
-                if(savedMatchResult ){
-                    res.status(201).send(savedMatchResult);
-                }else{
-                    res.status(404).json({message: "Please check match result"});
-                }
              }
+             const newMatchResult = new ResultModel({...req.body});
+             const savedMatchResult = newMatchResult.save();
+            if(savedMatchResult){
+                res.status(201).send(savedMatchResult);
+            }else{
+                res.status(404).json({message: "Please check match result"});
+            }
          })
          
      } catch (error) {
