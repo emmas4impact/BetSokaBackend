@@ -1,6 +1,8 @@
 const express =require('express');
 const ResultModel = require("./Schema");
 const result = express.Router();
+const q2m = require("query-to-mongo");
+
   
   result.get("/",  async (req, res, next)=>{
      try {
@@ -16,6 +18,21 @@ const result = express.Router();
          next(error)
      }
   })
+  result.get("/:gameDate",  async (req, res, next)=>{
+    try {
+        //const filterByDate =
+       const showResult = await ResultModel.find(req.query);
+       if(showResult){
+           res.status(200).send(showResult)
+       }else{
+           res.status(400).json({message: "Unauthorize user"})
+       }
+       
+        
+    } catch (error) {
+        next(error)
+    }
+ })
   result.get("/:id",  async (req, res, next)=>{
     try {
        const showResult = await ResultModel.findById(req.params.id)
@@ -31,22 +48,26 @@ const result = express.Router();
     }
  })
   result.post("/",async(req, res, next)=>{
-      try {
-        const newMatchResult = new ResultModel({
-            ...req.body
-            
-        });
-        const savedMatchResult = await newMatchResult.save();
-        if(savedMatchResult ){
-            res.status(201).send(savedMatchResult );
-        }else{
-            res.status(404).json({message: "Please check match result"});
-        }
-          
-      } catch (error) {
-          next(error);
-      }
-      
+     try {
+         ResultModel.findOne({fixtureId}).exec((err, fixture_id)=>{
+             if(fixture_id){
+                const err = new Error("Duplicated Record")
+                err.httpStatusCode = 409
+                next(err)
+             }else{
+                 const newMatchResult = new ResultModel({...req.body});
+                 const savedMatchResult = await newMatchResult.save();
+                if(savedMatchResult ){
+                    res.status(201).send(savedMatchResult);
+                }else{
+                    res.status(404).json({message: "Please check match result"});
+                }
+             }
+         })
+         
+     } catch (error) {
+         
+     }
   });
   result.put("/:id",  async (req, res, next) => {
     try {
