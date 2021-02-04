@@ -20,9 +20,10 @@ const {
     forbiddenHandler,
     badRequestHandler,
     genericErrorHandler,
+    conflictedHandler
 } = require("./errorHandlers/index");
 const server = express();
-const whitelist = ["http://localhost:3000"]
+const whitelist = ["http://localhost:3000", "http://localhost:3001"]
 const corsOptions = {
     origin: (origin, callback) => {
         if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -54,6 +55,7 @@ server.use("/match-result", resultRoute);
 server.use(badRequestHandler);
 server.use(forbiddenHandler);
 server.use(notFoundHandler);
+server.use(conflictedHandler);
 server.use(genericErrorHandler);
 
 console.log(listEndpoints(server));
