@@ -32,6 +32,10 @@ const {
       type: String,
       required: true
   },
+  gameDay:{
+      type: Date,
+      required: true
+  },
   gameDate:{
       type: Date,
       required:true 
