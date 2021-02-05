@@ -60,7 +60,7 @@ const q2m = require("query-to-mongo");
             if(savedMatchResult){
                 res.status(201).send(savedMatchResult);
             }else{
-                res.status(404).json({message: "Please check match result"});
+                res.status(404).json({message: "Please check match results"});
             }
          })
          
