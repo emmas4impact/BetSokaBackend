@@ -49,23 +49,21 @@ const q2m = require("query-to-mongo");
  })
   result.post("/", async(req, res, next)=>{
      try {
-         ResultModel.findOne({fixtureId}).exec((err, fixture_id)=>{
-             if(fixture_id){
-                const err = new Error("Duplicated Record")
-                err.httpStatusCode = 409
-                next(err)
-             }
-             const newMatchResult = new ResultModel({...req.body});
-             const savedMatchResult = newMatchResult.save();
-            if(savedMatchResult){
-                res.status(201).send(savedMatchResult);
-            }else{
-                res.status(404).json({message: "Please check match results"});
-            }
-         })
+         const checkFixtureId = await ResultModel.find({
+            fixtureId: req.body.fixtureId
+         });
+         console.log(checkFixtureId);
+         
+         if(checkFixtureId.length !==0){
+             res.status(409).send("Record already exist!")
+         }else{
+             const newMatchResult = new ResultModel(req.body);
+             await newMatchResult.save();
+             res.status(201).send("record Uploaded")
+         }
          
      } catch (error) {
-         
+         next(error)
      }
   });
   result.put("/:id",  async (req, res, next) => {
