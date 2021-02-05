@@ -20,12 +20,16 @@ const q2m = require("query-to-mongo");
   })
   result.get("/:gameDate",  async (req, res, next)=>{
     try {
-        //const filterByDate =
-       const showResult = await ResultModel.find(req.query);
+        
+       const showResult = await ResultModel.find({
+           "gameDate":{
+               $gte: new Date((new Date().getTime()-(15*24*60*60*1000)))
+           }
+       }).sort({"gameDate": -1});
        if(showResult){
            res.status(200).send(showResult)
        }else{
-           res.status(400).json({message: "Unauthorize user"})
+           res.status(404).json({message: "Date not found"})
        }
        
         

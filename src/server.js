@@ -50,7 +50,7 @@ server.use(express.json());
 server.use("/users", userRoute);
 server.use('/charge', require('./payments/payment'))
 
-server.use("/match-result", resultRoute);
+server.use("/match-results", resultRoute);
 
 server.use(badRequestHandler);
 server.use(forbiddenHandler);
