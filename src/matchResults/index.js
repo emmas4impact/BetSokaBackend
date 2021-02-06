@@ -2,18 +2,19 @@ const express =require('express');
 const ResultModel = require("./Schema");
 const result = express.Router();
 const q2m = require("query-to-mongo");
-
+const {
+    authorize,
+    adminOnlyMiddleware
+  } = require("../middlewares/authorize");
   
   result.get("/",  async (req, res, next)=>{
      try {
         const showResult = await ResultModel.find(req.query);
         if(showResult){
-            res.status(200).send(showResult)
+            res.status(200).send({results: showResult, Total: showResult.length})
         }else{
-            res.status(400).json({message: "Unauthorize user"})
-        }
-        
-         
+            res.status(400).json({message: "Bad request"})
+        }      
      } catch (error) {
          next(error)
      }
@@ -27,7 +28,7 @@ const q2m = require("query-to-mongo");
            }
        }).sort({"gameDate": -1});
        if(showResult){
-           res.status(200).send(showResult)
+        res.status(200).send({results: showResult, Total: showResult.length})
        }else{
            res.status(404).json({message: "Date not found"})
        }
@@ -51,7 +52,7 @@ const q2m = require("query-to-mongo");
         next(error)
     }
  })
-  result.post("/", async(req, res, next)=>{
+  result.post("/", authorize, adminOnlyMiddleware,async(req, res, next)=>{
      try {
          const checkFixtureId = await ResultModel.find({
             fixtureId: req.body.fixtureId
