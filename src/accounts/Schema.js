@@ -19,6 +19,11 @@ const {
       type: Number,
       required:true
   },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'user',
+
+  }, 
 },
     {
       timestamps: true
@@ -60,6 +65,6 @@ const {
       next()
     }
   })
-  const AccountModel = model("acount", AccountSchema);
+  const AccountModel = model("bank_acount", AccountSchema);
   
   module.exports = AccountModel;
