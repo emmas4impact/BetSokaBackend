@@ -48,7 +48,7 @@ server.use(passport.initialize());
 server.use(express.json());
 
 server.use("/users", userRoute);
-server.use('/charge', require('./payments/payment'))
+server.use('/accounts', require('./accounts/account'))
 
 server.use("/match-results", resultRoute);
 

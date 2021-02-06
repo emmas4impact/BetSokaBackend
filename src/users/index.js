@@ -122,7 +122,7 @@ router.post("/email-activate", async (req, res, next) => {
         
         } catch (error) {
           
-          res.send(error.errors);
+          res.send(error.error);
         }
         
       })
@@ -310,10 +310,11 @@ router.post("/login", async (req, res, next) => {
 })
 router.post("/logout", authorize, async (req, res, next) => {
   try {
-    req.user.refreshTokens = req.user.refreshTokens.filter(
-      (t) => t.token !== req.body.refreshToken
-    )
-    await req.user.save()
+    // req.user.refreshTokens = req.user.refreshTokens.filter(
+    //   (t) => t.token !== req.body.refreshToken
+    // )
+    req.user.refreshTokens = [];
+    await req.user.save();
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     res.send("logout successfully!")
