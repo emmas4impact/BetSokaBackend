@@ -1,8 +1,8 @@
 const express = require("express");
-const UserModel = require("./Schema");
+const {UserModel, AccountModel} = require("./Schema");
 const mailgun = require("mailgun-js");
 const jwt = require("jsonwebtoken");
-const path = require("path");
+// const AccountModel = require("./Schema");
 const _ = require("lodash");
 const DOMAIN = process.env.DOMAIN;
 const mg = mailgun({ apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN });
@@ -241,7 +241,7 @@ router.put("/reset-password", async (req, res, next) => {
     next(error);
   }
 });
-router.get("/", adminOnlyMiddleware, async (req, res, next) => {
+router.get("/",authorize, adminOnlyMiddleware, async (req, res, next) => {
   try {
     const users = await UserModel.find(req.query);
     res.send({
@@ -356,6 +356,87 @@ router.post("/refreshToken", async (req, res, next) => {
       err.httpStatusCode = 403;
       next(err);
     }
+  }
+});
+router.get("/:id/accounts", authorize, async (req, res, next) => {
+  try {
+    const users = await UserModel.findById(req.params.id)
+    const userId = await AccountModel.findById(req.params.id)
+    if(users){
+      const accountDetails = await AccountModel.find(req.query)
+      if (accountDetails) {
+        res
+          .status(200)
+          .send({ account: accountDetails, Total: accountDetails.length });
+      } else {
+        res.status(400).json({ message: "unable to get account details" });
+      }
+      
+    }else{
+      res.status(404).send(`users with id ${req.params.id} not Found`);
+    }
+   
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/:id/accounts/:_id", authorize, async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const accountDetailsId = await AccountModel.findById(id);
+
+    if (accountDetailsId) {
+      res.status(200).send(accountDetailsId);
+    }
+    res.status(404).json({ message: `Account with ${id} is not Found` });
+  } catch (error) {
+    next(error);
+  }
+});
+router.post("/:id/accounts", authorize, async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const verifyUser = await UserModel.findById(id);
+
+    if (verifyUser._id.equals(id)) {
+      const newAccount = new AccountModel({
+        ...req.body,
+        userId: id,
+      });
+      const savedAccount = await newAccount.save();
+      if (savedAccount) {
+        res.status(201).send(newAccount._id);
+      } else {
+        res.status(400).json({ message: "Please check the body and re-post" });
+      }
+    } else {
+      res.status(404).json({ message: `Id with ${id} not valid` });
+    }
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+router.put("/:id/accounts/:_id", authorize, async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const updateAccount = await AccountModel.findByIdAndUpdate(id, req.body);
+    if (updateAccount) {
+      res.status(200).send("acount updated successfully");
+    } else {
+      res.status(200).json({ message: `User with ${id} not Found` });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+router.delete("/:id/accounts/:_id", authorize, async (req, res, next) => {
+  const id = req.params.id;
+  const deleteAccount = await AccountModel.findByIdAndDelete(id);
+  if (deleteAccount) {
+    res.status(200).send("Record deleted successfully");
+  } else {
+    res.status(404).send(`Record with id ${id} is not found`);
   }
 });
 
