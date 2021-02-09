@@ -82,6 +82,10 @@ const userSchema = new Schema(
         },
       },
     ],
+    account: [{
+      type: Schema.Types.ObjectId,
+      ref: "bank_acount",
+    }],
   },
 
   {
@@ -89,6 +93,31 @@ const userSchema = new Schema(
   }
 );
 
+const AccountSchema = new Schema(
+  {
+    accountName: {
+      type: String,
+      required: true,
+    },
+    Bank: {
+      type: String,
+      required: true,
+    },
+
+    accountNumber: {
+      type: Number,
+      required: true,
+    },
+    user: [{
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    }],
+
+  },
+  {
+    timestamps: true,
+  }
+);
 userSchema.post("validate", function (error, doc, next) {
   if (error) {
     error.httpStatusCode = 400;
@@ -158,6 +187,11 @@ userSchema.post("save", function (error, doc, next) {
     next();
   }
 });
+userSchema.static("bankAccount", async function(id){
+  const accounts = await UserModel.find({_id: id}).populate("bank_acounts");
+  return accounts;
+})  
+const AccountModel = model("bank_acount", AccountSchema);
 const UserModel = model("user", userSchema);
 
-module.exports = UserModel;
+module.exports = {UserModel, AccountModel};
