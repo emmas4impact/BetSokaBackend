@@ -322,8 +322,8 @@ router.post("/logout", authorize, async (req, res, next) => {
     // )
     req.user.refreshTokens = [];
     await req.user.save();
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    //res.clearCookie("accessToken");
+    //res.clearCookie("refreshToken");
     res.send("logout successfully!");
   } catch (err) {
     next(err);
