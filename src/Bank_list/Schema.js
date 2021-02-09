@@ -53,6 +53,6 @@ BankSchema.post("save", function (error, doc, next) {
     next();
   }
 });
-const BankModel = model("bank_list", BankSchema);
+const BankModel = model("bank", BankSchema);
 
-module.exports = BankModel;
+module.exports = BankSchema;
