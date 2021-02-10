@@ -149,7 +149,7 @@ userSchema.statics.findByCredentials = async (username, password) => {
   const user = await UserModel.findOne({
     username: username,
   });
-  console.log("Whats going on here",user.dov);
+  console.log("Whats going on here",user);
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {

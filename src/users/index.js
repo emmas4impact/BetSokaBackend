@@ -21,16 +21,16 @@ router.post("/register", async (req, res) => {
       dob,
       email,
       password,
-      role,
+      //role,
     } = req.body;
-    //const filepath = path.join(__dirname, '../../public/EMMANUELADEDEJI.pdf');
+    
     UserModel.findOne({ email }).exec((err, user) => {
       if (user) {
         return res.status(409).send("user with same email exists");
       }
 
       const token = jwt.sign(
-        { name, surname, username, phone, dob, email, password, role },
+        { name, surname, username, phone, dob, email, password},
         process.env.ACC_ACTIVATION_KEY,
         {
           expiresIn: "30m",
