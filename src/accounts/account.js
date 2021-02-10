@@ -39,11 +39,17 @@ accountRouter.post("/:id", authorize, async (req, res, next) => {
 
     if (verifyUser._id.equals(id)) {
       const newAccount = new AccountModel({
-        ...req.body,
-        userId: id,
+        ...req.body
       });
       const savedAccount = await newAccount.save();
-      if (savedAccount) {
+     const updatedUser = await UserModel.findById( id ).then((user) => {
+       
+          user.account.push(savedAccount);
+          user.save();
+      }).catch((e) => {
+        console.log(e);
+      });
+      if (updatedUser) {
         res.status(201).send(newAccount._id);
       } else {
         res.status(400).json({ message: "Please check the body and re-post" });
