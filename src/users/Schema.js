@@ -1,6 +1,6 @@
 const { model, Schema } = require("mongoose");
 const validator = require("mongoose-validator");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt")
 
 const userSchema = new Schema(
   {
@@ -93,31 +93,31 @@ const userSchema = new Schema(
   }
 );
 
-const AccountSchema = new Schema(
-  {
-    accountName: {
-      type: String,
-      required: true,
-    },
-    Bank: {
-      type: String,
-      required: true,
-    },
+// const AccountSchema = new Schema(
+//   {
+//     accountName: {
+//       type: String,
+//       required: true,
+//     },
+//     Bank: {
+//       type: String,
+//       required: true,
+//     },
 
-    accountNumber: {
-      type: Number,
-      required: true,
-    },
-    user: [{
-      type: Schema.Types.ObjectId,
-      ref: "user",
-    }],
+//     accountNumber: {
+//       type: Number,
+//       required: true,
+//     },
+//     user: [{
+//       type: Schema.Types.ObjectId,
+//       ref: "user",
+//     }],
 
-  },
-  {
-    timestamps: true,
-  }
-);
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
 userSchema.post("validate", function (error, doc, next) {
   if (error) {
     error.httpStatusCode = 400;
@@ -149,7 +149,7 @@ userSchema.statics.findByCredentials = async (username, password) => {
   const user = await UserModel.findOne({
     username: username,
   });
-  console.log(user.dov);
+  console.log("Whats going on here",user.dov);
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
@@ -157,7 +157,7 @@ userSchema.statics.findByCredentials = async (username, password) => {
     err.httpStatusCode = 401;
     throw err;
   }
-  console.log("i am right heere");
+  console.log("I am right here");
 
   return user;
 };
@@ -191,7 +191,7 @@ userSchema.static("bankAccount", async function(id){
   const accounts = await UserModel.find({_id: id}).populate("bank_acounts");
   return accounts;
 })  
-const AccountModel = model("bank_acount", AccountSchema);
+//const AccountModel = model("bank_acount", AccountSchema);
 const UserModel = model("user", userSchema);
 
-module.exports = {UserModel, AccountModel};
+module.exports = UserModel;

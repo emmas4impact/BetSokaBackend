@@ -1,5 +1,5 @@
 const express = require("express");
-const {UserModel, AccountModel} = require("./Schema");
+const UserModel = require("./Schema");
 const mailgun = require("mailgun-js");
 const jwt = require("jsonwebtoken");
 // const AccountModel = require("./Schema");
