@@ -18,14 +18,20 @@ router.post("/register", async (req, res) => {
       email: req.body.email
     });
     console.log(checkEmail);
+    console.log("I am here")
     if (checkEmail.length !== 0) {
       res.status(409).send("user with same email exists");
-    } else {
+    }
 
       const newUser = new UserModel(req.body);
-      await newUser.save();
-      res.status(201).send("registered successfuly");
-    }
+      console.log(newUser)
+      const savedUser = await newUser.save();
+      if (savedUser) {
+        res.status(201).send("registered successfully");
+      }else{
+        console.log("please check sechma")
+      }
+    
  
   } catch (error) {
     res.send(error.errors);
