@@ -13,58 +13,7 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
-    // const {
-    //   name,
-    //   surname,
-    //   username,
-    //   phone,
-    //   dob,
-    //   email,
-    //   password,
-    //   //role,
-    // } = req.body;
-    
-    // UserModel.findOne({ email }).exec((err, user) => {
-    //   if (user) {
-    //     return res.status(409).send("user with same email exists");
-    //   }
-
-    //   const token = jwt.sign(
-    //     { name, surname, username, phone, dob, email, password},
-    //     process.env.ACC_ACTIVATION_KEY,
-    //     {
-    //       expiresIn: "30m",
-    //     }
-    //   );
-
-    //   const data = {
-    //     from: "noreply@betsoka.com.ng",
-    //     to: email,
-    //     subject: "Account Activation Link",
-    //     html: `<h2> Please click on given link to activate your account</h2>
-    //     <p>This link expires in 30mins </p>
-    //     <a href="${process.env.CLIENT_URL}/authentication/activate/${token}">Activate your account!</a>
-    //     <p>${process.env.CLIENT_URL}/authentication/activate/${token}</>
-    //     <small>Best regards,</small>
-    //     <br>
-    //     <strong>BetSoka INC,</strong>
-    //     <br>
-    //     <strong>Lagos, Nigeria</strong>
-    //   `,
-    //   };
-    //   mg.messages().send(data, function (error, body) {
-    //     if (error) {
-    //       return res.json({
-    //         error: err.message,
-    //       });
-    //     }
-    //     console.log(body);
-    //     return res.json({
-    //       message: "Email has been sent kindly activate your account",
-    //     });
-    //   });
-    // });
-    
+   
     const checkEmail = await UserModel.find({
       email: req.body.email
     });
