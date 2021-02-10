@@ -9,7 +9,7 @@ const authorize = async (req, res, next) => {
     const user = await UserModel.findOne({
       _id: decoded._id,
     });
-    console.log(user);
+    console.log("I am the user",user);
 
     if (!user) {
       throw new Error();
