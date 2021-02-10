@@ -13,29 +13,57 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
-   
-    const checkEmail = await UserModel.find({
-      email: req.body.email
-    });
-    const checkUser= await UserModel.find({
-      username: req.body.username
-    });
-    console.log(checkEmail);
-    console.log("I am here")
-    if (checkEmail.length !== 0 || checkUser.length !==0) {
-      res.status(409).send("user with same email or username exists");
-    }
-
-      const newUser = new UserModel(req.body);
-      console.log(newUser)
-      const savedUser = await newUser.save();
-      if (savedUser) {
-        res.status(201).send("registered successfully");
-      }else{
-        console.log("please check sechma")
-      }
+    const {
+      name,
+      surname,
+      username,
+      phone,
+      dob,
+      email,
+      password,
+      //role,
+    } = req.body;
     
- 
+    UserModel.findOne({ email }).exec((err, user) => {
+      if (user) {
+        return res.status(409).send("user with same email exists");
+      }
+
+      const token = jwt.sign(
+        { name, surname, username, phone, dob, email, password},
+        process.env.ACC_ACTIVATION_KEY,
+        {
+          expiresIn: "30m",
+        }
+      );
+
+      const data = {
+        from: "noreply@betsoka.com.ng",
+        to: email,
+        subject: "Account Activation Link",
+        html: `<h2> Please click on given link to activate your account</h2>
+        <p>This link expires in <strong>30 mins</strong> </p>
+        <a href="${process.env.CLIENT_URL}/authentication/activate/${token}">Activate your account!</a>
+        <p>${process.env.CLIENT_URL}/authentication/activate/${token}</>
+        <small>Best regards,</small>
+        <br>
+        <strong>BetSoka INC,</strong>
+        <br>
+        <strong>Lagos, Nigeria</strong>
+      `,
+      };
+      mg.messages().send(data, function (error, body) {
+        if (error) {
+          return res.json({
+            error: err.message,
+          });
+        }
+        console.log(body);
+        return res.json({
+          message: "Email has been sent kindly activate your account",
+        });
+      });
+    });
   } catch (error) {
     res.send(error.errors);
   }
@@ -333,22 +361,11 @@ router.post("/refreshToken", async (req, res, next) => {
 });
 router.get("/:id/accounts", authorize, async (req, res, next) => {
   try {
-    const users = await UserModel.findById(req.params.id)
-    const userId = await AccountModel.findById(req.params.id)
-    if(users){
-      const accountDetails = await AccountModel.find(req.query)
-      if (accountDetails) {
-        res
-          .status(200)
-          .send({ account: accountDetails, Total: accountDetails.length });
-      } else {
-        res.status(400).json({ message: "unable to get account details" });
-      }
-      
-    }else{
-      res.status(404).send(`users with id ${req.params.id} not Found`);
-    }
+    
    
+    const user = await UserModel.findById(req.params.id).populate('account').exec();
+    res.status(200).send(user)
+  
   } catch (error) {
     next(error);
   }
@@ -366,51 +383,8 @@ router.get("/:id/accounts/:_id", authorize, async (req, res, next) => {
     next(error);
   }
 });
-router.post("/:id/accounts", authorize, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const verifyUser = await UserModel.findById(id);
 
-    if (verifyUser._id.equals(id)) {
-      const newAccount = new AccountModel({
-        ...req.body,
-        userId: id,
-      });
-      const savedAccount = await newAccount.save();
-      if (savedAccount) {
-        res.status(201).send(newAccount._id);
-      } else {
-        res.status(400).json({ message: "Please check the body and re-post" });
-      }
-    } else {
-      res.status(404).json({ message: `Id with ${id} not valid` });
-    }
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-});
-router.put("/:id/accounts/:_id", authorize, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const updateAccount = await AccountModel.findByIdAndUpdate(id, req.body);
-    if (updateAccount) {
-      res.status(200).send("acount updated successfully");
-    } else {
-      res.status(200).json({ message: `User with ${id} not Found` });
-    }
-  } catch (error) {
-    next(error);
-  }
-});
-router.delete("/:id/accounts/:_id", authorize, async (req, res, next) => {
-  const id = req.params.id;
-  const deleteAccount = await AccountModel.findByIdAndDelete(id);
-  if (deleteAccount) {
-    res.status(200).send("Record deleted successfully");
-  } else {
-    res.status(404).send(`Record with id ${id} is not found`);
-  }
-});
+
+
 
 module.exports = router;
