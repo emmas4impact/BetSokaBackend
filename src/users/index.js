@@ -2,7 +2,7 @@ const express = require("express");
 const UserModel = require("./Schema");
 const mailgun = require("mailgun-js");
 const jwt = require("jsonwebtoken");
-// const AccountModel = require("./Schema");
+const AccountModel = require("../accounts/Schema");
 const _ = require("lodash");
 const DOMAIN = process.env.DOMAIN;
 const mg = mailgun({ apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN });
@@ -13,56 +13,71 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
-    const {
-      name,
-      surname,
-      username,
-      phone,
-      dob,
-      email,
-      password,
-      //role,
-    } = req.body;
+    // const {
+    //   name,
+    //   surname,
+    //   username,
+    //   phone,
+    //   dob,
+    //   email,
+    //   password,
+    //   //role,
+    // } = req.body;
     
-    UserModel.findOne({ email }).exec((err, user) => {
-      if (user) {
-        return res.status(409).send("user with same email exists");
-      }
+    // UserModel.findOne({ email }).exec((err, user) => {
+    //   if (user) {
+    //     return res.status(409).send("user with same email exists");
+    //   }
 
-      const token = jwt.sign(
-        { name, surname, username, phone, dob, email, password},
-        process.env.ACC_ACTIVATION_KEY,
-        {
-          expiresIn: "30m",
-        }
-      );
+    //   const token = jwt.sign(
+    //     { name, surname, username, phone, dob, email, password},
+    //     process.env.ACC_ACTIVATION_KEY,
+    //     {
+    //       expiresIn: "30m",
+    //     }
+    //   );
 
-      const data = {
-        from: "noreply@betsoka.com.ng",
-        to: email,
-        subject: "Account Activation Link",
-        html: `<h2> Please click on given link to activate your account</h2>
-        <a href="${process.env.CLIENT_URL}/authentication/activate/${token}">Activate your account!</a>
-        <p>${process.env.CLIENT_URL}/authentication/activate/${token}</>
-        <small>Best regards,</small>
-        <br>
-        <strong>BetSoka INC,</strong>
-        <br>
-        <strong>Lagos, Nigeria</strong>
-      `,
-      };
-      mg.messages().send(data, function (error, body) {
-        if (error) {
-          return res.json({
-            error: err.message,
-          });
-        }
-        console.log(body);
-        return res.json({
-          message: "Email has been sent kindly activate your account",
-        });
-      });
+    //   const data = {
+    //     from: "noreply@betsoka.com.ng",
+    //     to: email,
+    //     subject: "Account Activation Link",
+    //     html: `<h2> Please click on given link to activate your account</h2>
+    //     <p>This link expires in 30mins </p>
+    //     <a href="${process.env.CLIENT_URL}/authentication/activate/${token}">Activate your account!</a>
+    //     <p>${process.env.CLIENT_URL}/authentication/activate/${token}</>
+    //     <small>Best regards,</small>
+    //     <br>
+    //     <strong>BetSoka INC,</strong>
+    //     <br>
+    //     <strong>Lagos, Nigeria</strong>
+    //   `,
+    //   };
+    //   mg.messages().send(data, function (error, body) {
+    //     if (error) {
+    //       return res.json({
+    //         error: err.message,
+    //       });
+    //     }
+    //     console.log(body);
+    //     return res.json({
+    //       message: "Email has been sent kindly activate your account",
+    //     });
+    //   });
+    // });
+    
+    const checkEmail = await UserModel.find({
+      email: req.body.email
     });
+    console.log(checkEmail);
+    if (checkEmail.length !== 0) {
+      res.status(409).send("user with same email exists");
+    } else {
+
+      const newUser = new UserModel(req.body);
+      await newUser.save();
+      res.status(201).send("registered successfuly");
+    }
+ 
   } catch (error) {
     res.send(error.errors);
   }
