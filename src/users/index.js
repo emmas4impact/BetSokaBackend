@@ -17,10 +17,13 @@ router.post("/register", async (req, res) => {
     const checkEmail = await UserModel.find({
       email: req.body.email
     });
+    const checkUser= await UserModel.find({
+      username: req.body.username
+    });
     console.log(checkEmail);
     console.log("I am here")
-    if (checkEmail.length !== 0) {
-      res.status(409).send("user with same email exists");
+    if (checkEmail.length !== 0 || checkUser.length !==0) {
+      res.status(409).send("user with same email or username exists");
     }
 
       const newUser = new UserModel(req.body);
