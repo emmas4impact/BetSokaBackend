@@ -42,7 +42,7 @@ server.use(passport.initialize());
 server.use(express.json());
 
 server.use("/users", userRoute);
-//server.use("/accounts", require("./accounts/account"));
+server.use("/accounts", require("./accounts/account"));
 server.use("/bank-list", require("./Bank_list/index"));
 
 server.use("/match-results", resultRoute);
