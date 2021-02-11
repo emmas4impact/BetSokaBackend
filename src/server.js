@@ -8,7 +8,7 @@ const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const resultRoute = require("./matchResults/index");
-const userRoute = require("./users/index");
+const userRoute = require("./userModel/index");
 
 const {
   notFoundHandler,
@@ -42,7 +42,7 @@ server.use(passport.initialize());
 server.use(express.json());
 
 server.use("/users", userRoute);
-server.use("/accounts", require("./accounts/account"));
+server.use("/accounts", require("./accountModel/account"));
 server.use("/bank-list", require("./Bank_list/index"));
 
 server.use("/match-results", resultRoute);
