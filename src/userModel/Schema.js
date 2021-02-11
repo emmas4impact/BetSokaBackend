@@ -93,31 +93,7 @@ const userSchema = new Schema(
   }
 );
 
-// const AccountSchema = new Schema(
-//   {
-//     accountName: {
-//       type: String,
-//       required: true,
-//     },
-//     Bank: {
-//       type: String,
-//       required: true,
-//     },
 
-//     accountNumber: {
-//       type: Number,
-//       required: true,
-//     },
-//     user: [{
-//       type: Schema.Types.ObjectId,
-//       ref: "user",
-//     }],
-
-//   },
-//   {
-//     timestamps: true,
-//   }
-// );
 userSchema.post("validate", function (error, doc, next) {
   if (error) {
     error.httpStatusCode = 400;
