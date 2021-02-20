@@ -10,6 +10,7 @@ const { authenticate, refreshToken } = require("../auth/authTools");
 const { authorize, adminOnlyMiddleware } = require("../middlewares/authorize");
 const { json } = require("express");
 const router = express.Router();
+const path = require("path")
 
 router.post("/register", async (req, res) => {
   try {
@@ -23,7 +24,8 @@ router.post("/register", async (req, res) => {
       password,
       //role,
     } = req.body;
-    
+    // const filepath = path.join(__dirname, `../../public/ADEDEJIMICHAEL.pdf`)
+    // console.log(filepame)
     UserModel.findOne({ email }).exec((err, user) => {
       if (user) {
         return res.status(409).send("user with same email exists");
